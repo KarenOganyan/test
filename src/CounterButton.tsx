@@ -1,18 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import './index.css';
 
 type ButtonProps = {
   value: number;
-  onClick: (value: number) => void;
+  delay: number;
+  onClick: () => void;
 };
 
-export default function CounterButton({ value, onClick }: ButtonProps): JSX.Element {
+export default function CounterButton({ value, delay, onClick }: ButtonProps): JSX.Element {
   const [disabled, setDisabled] = useState(false);
 
   const handleClick = (): void => {
-    onClick(value);
+    onClick();
     setDisabled(true);
-    setTimeout(() => setDisabled(false), value * 500);
   };
+
+  useEffect(() => {
+    if (disabled) {
+      const timer = setTimeout(() => setDisabled(false), delay);
+      return () => clearTimeout(timer);
+    }
+  }, [disabled, delay]);
 
   return (
     <button type="button" className="counter-button" onClick={handleClick} disabled={disabled}>
